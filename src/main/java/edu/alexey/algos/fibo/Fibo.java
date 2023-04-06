@@ -1,4 +1,4 @@
-package edu.alexey.algos;
+package edu.alexey.algos.fibo;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

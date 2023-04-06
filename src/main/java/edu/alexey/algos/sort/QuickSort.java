@@ -7,7 +7,7 @@ public class QuickSort implements Sort {
 	}
 
 	private static void quickSortV1(int[] array, int startIndex, int endIndex) {
-		int pivotIndex = (startIndex + endIndex) >> 1;
+		int pivotIndex = (startIndex >> 1) + (endIndex >> 1);
 		int pivotValue = array[pivotIndex];
 
 		int leftIndex = startIndex;

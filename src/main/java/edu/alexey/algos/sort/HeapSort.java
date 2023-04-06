@@ -3,7 +3,7 @@ package edu.alexey.algos.sort;
 public class HeapSort implements Sort {
 
 	public void sort(int[] array) {
-		for (int i = array.length / 2 - 1; i >= 0; --i) {
+		for (int i = (array.length >> 1) - 1; i >= 0; --i) {
 			heapify(array, array.length, i);
 		}
 
@@ -18,8 +18,8 @@ public class HeapSort implements Sort {
 
 	private static void heapify(int[] array, int heapSize, int rootIndex) {
 		int largestItemIndex = rootIndex;
-		int leftChildIndex = 2 * rootIndex + 1;
-		int rightChildIndex = 2 * rootIndex + 2;
+		int leftChildIndex = (rootIndex << 1) + 1; // 2 * rootIndex + 1;
+		int rightChildIndex = leftChildIndex + 1; // 2 * rootIndex + 2;
 
 		if (leftChildIndex < heapSize && array[leftChildIndex] > array[largestItemIndex]) {
 			largestItemIndex = leftChildIndex;
