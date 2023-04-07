@@ -1,16 +1,20 @@
 package edu.alexey.algos.linkedlist;
 
+import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
+/**
+ * Двунаправленный связный список.
+ */
 public class BidirectionalLinkedList<T> implements LinkedList<T> {
 
 	private static class Node<T> {
 		T value;
 		Node<T> prior;
 		Node<T> next;
-
-		public Node() {
-		}
 
 		public Node(T value) {
 			this.value = value;
@@ -37,18 +41,6 @@ public class BidirectionalLinkedList<T> implements LinkedList<T> {
 		}
 	}
 
-	public void add(T value) {
-		var node = new Node<>(value);
-		if (tail == null) {
-			head = tail = node;
-			length = 1;
-		} else {
-			tail.next = node;
-			node.prior = tail;
-			++length;
-		}
-	}
-
 	@Override
 	public int length() {
 		return length;
@@ -62,6 +54,36 @@ public class BidirectionalLinkedList<T> implements LinkedList<T> {
 	@Override
 	public void clear() {
 		head = tail = null;
+		length = 0;
+	}
+
+	@Override
+	public boolean contains(T value) {
+		if (head == null) {
+			return false;
+		}
+		if (head == tail) {
+			return Objects.equals(value, head.value);
+		}
+
+		var forward = head;
+		var backward = tail;
+		for (;;) {
+
+			if (Objects.equals(value, forward.value)
+					|| Objects.equals(value, backward.value)) {
+				return true;
+			}
+
+			forward = forward.next;
+			if (forward == backward) {
+				return false;
+			}
+			backward = backward.prior;
+			if (forward == backward) {
+				return Objects.equals(value, forward.value);
+			}
+		}
 	}
 
 	@Override
@@ -80,37 +102,37 @@ public class BidirectionalLinkedList<T> implements LinkedList<T> {
 		return tail.value;
 	}
 
-	private void addNodeInFront(Node<T> node) {
+	private void putNodesInFront(Node<T> insertionHead, Node<T> insertionTail) {
 		if (head != null) {
-			node.next = head;
-			head.prior = node;
+			insertionTail.next = head;
+			head.prior = insertionTail;
 		} else {
-			tail = node;
+			tail = insertionTail;
 		}
-		head = node;
+		head = insertionHead;
 	}
 
-	private void addNodeToBack(Node<T> node) {
+	private void putNodesToBack(Node<T> insertionHead, Node<T> insertionTail) {
 		if (tail != null) {
-			node.prior = tail;
-			tail.next = node;
+			insertionHead.prior = tail;
+			tail.next = insertionHead;
 		} else {
-			head = node;
+			head = insertionHead;
 		}
-		tail = node;
+		tail = insertionTail;
 	}
 
 	@Override
 	public void addFront(T value) {
 		var node = new Node<>(value);
-		addNodeInFront(node);
+		putNodesInFront(node, node);
 		++length;
 	}
 
 	@Override
 	public void addBack(T value) {
 		var node = new Node<>(value);
-		addNodeToBack(node);
+		putNodesToBack(node, node);
 		++length;
 	}
 
@@ -120,7 +142,7 @@ public class BidirectionalLinkedList<T> implements LinkedList<T> {
 			return;
 		}
 		var frontLinkedList = new BidirectionalLinkedList<>(values);
-		addNodeInFront(frontLinkedList.tail);
+		putNodesInFront(frontLinkedList.head, frontLinkedList.tail);
 		length += values.length;
 	}
 
@@ -130,25 +152,146 @@ public class BidirectionalLinkedList<T> implements LinkedList<T> {
 			return;
 		}
 		var backLinkedList = new BidirectionalLinkedList<>(values);
-		addNodeToBack(backLinkedList.head);
+		putNodesToBack(backLinkedList.head, backLinkedList.tail);
 		length += values.length;
 	}
 
 	@Override
 	public T removeFront() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'removeFront'");
+		if (head == null) {
+			throw new NoSuchElementException();
+		}
+		var nodeToRemove = head;
+
+		head = head.next;
+		if (head != null) {
+			head.prior = null;
+		} else {
+			tail = null;
+		}
+		--length;
+
+		return nodeToRemove.value;
 	}
 
 	@Override
 	public T removeBack() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'removeBack'");
+		if (tail == null) {
+			throw new NoSuchElementException();
+		}
+		var nodeToRemove = tail;
+
+		tail = tail.prior;
+		if (tail != null) {
+			tail.next = null;
+		} else {
+			head = null;
+		}
+		--length;
+
+		return nodeToRemove.value;
+	}
+
+	private Node<T> findForward(T value) {
+		for (Node<T> node = head; node != null; node = node.next) {
+			if (Objects.equals(value, node.value)) {
+				return node;
+			}
+		}
+		return null;
+	}
+
+	private Node<T> findBackward(T value) {
+		for (Node<T> node = tail; node != null; node = node.prior) {
+			if (Objects.equals(value, node.value)) {
+				return node;
+			}
+		}
+		return null;
+	}
+
+	private void removeNode(Node<T> node) {
+		assert node != null;
+		var priorNode = node.prior;
+		var nextNode = node.next;
+		if (priorNode != null) {
+			priorNode.next = nextNode;
+		} else { // i.e. node == head
+			head = nextNode;
+		}
+		if (nextNode != null) {
+			nextNode.prior = priorNode;
+		} else { // i.e. node == tail
+			tail = priorNode;
+		}
+	}
+
+	@Override
+	public boolean removeFront(T value) {
+		Node<T> nodeToRemove = findForward(value);
+		if (nodeToRemove == null) {
+			return false;
+		}
+		removeNode(nodeToRemove);
+		--length;
+		return true;
+	}
+
+	@Override
+	public boolean removeBack(T value) {
+		Node<T> nodeToRemove = findBackward(value);
+		if (nodeToRemove == null) {
+			return false;
+		}
+		removeNode(nodeToRemove);
+		--length;
+		return true;
 	}
 
 	@Override
 	public void reverse() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'reverse'");
+		if (head == tail) {
+			return;
+		}
+
+		Node<T> node = head;
+		do {
+			var bkp = node.next;
+			node.next = node.prior;
+			node.prior = bkp;
+			node = bkp;
+		} while (node != null);
+
+		var temp = head;
+		head = tail;
+		tail = temp;
+	}
+
+	@Override
+	public Iterator<T> iterator() {
+		return new Iterator<T>() {
+			private Node<T> node = BidirectionalLinkedList.this.head;
+
+			@Override
+			public boolean hasNext() {
+				return node != null;
+			}
+
+			@Override
+			public T next() {
+				if (node == null) {
+					throw new NoSuchElementException();
+				}
+				var nodeToReturn = node;
+				node = nodeToReturn.next;
+				return nodeToReturn.value;
+			}
+		};
+	}
+
+	@Override
+	public String toString() {
+		return StreamSupport.stream(this.spliterator(), false).map(Object::toString)
+				.collect(Collectors.joining(", ", "[\u21c4[ ", " ]]"));
 	}
 }

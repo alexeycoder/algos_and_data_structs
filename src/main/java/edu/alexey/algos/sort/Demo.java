@@ -46,11 +46,11 @@ public class Demo {
 			new QuickSortBasicCenterV3b(),
 			new QuickSortBasicCenterV3(),
 			// new QuickSortBasicCenter(),
-			new QuickSortBasicRandom(),
+			// new QuickSortBasicRandom(),
 			new QuickSort(),
+			new HeapSort(),
 			new InsertionSort(),
 			new ShellSort(),
-			new HeapSort(),
 			new SelectionSort(),
 			new BubbleSort());
 
