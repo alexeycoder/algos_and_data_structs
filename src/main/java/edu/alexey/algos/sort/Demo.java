@@ -44,11 +44,12 @@ public class Demo {
 				}
 			},
 			new QuickSortBasicCenterV3b(),
-			new QuickSortBasicCenterV3(),
+			// new QuickSortBasicCenterV3(),
 			// new QuickSortBasicCenter(),
 			// new QuickSortBasicRandom(),
 			new QuickSort(),
 			new HeapSort(),
+			// new QuickSortBasicRight(),
 			new InsertionSort(),
 			new ShellSort(),
 			new SelectionSort(),
@@ -67,6 +68,7 @@ public class Demo {
 			}
 			System.out.println("\nSorting algo is " + name);
 			System.out.println();
+
 			System.out.println("Random input:");
 			for (int n : SIZES) {
 				var elapsedTimeNsOpt = Estimate(algo, Demo::getRandomArray, n);
