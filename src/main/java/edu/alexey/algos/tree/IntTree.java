@@ -3,7 +3,7 @@ package edu.alexey.algos.tree;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tree {
+public class IntTree {
 	public static class Node {
 		int value;
 		List<Node> children;

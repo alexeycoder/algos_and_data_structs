@@ -32,28 +32,30 @@ public class Demo {
 	};
 
 	static final List<Sort> ALGOS = List.of(
-			new Sort() {
-				@Override
-				public void sort(int[] array) {
-					Arrays.sort(array);
-				}
+			// new Sort() {
+			// @Override
+			// public void sort(int[] array) {
+			// Arrays.sort(array);
+			// }
 
-				@Override
-				public String toString() {
-					return "Java Sort";
-				}
-			},
-			new QuickSortBasicCenterV3b(),
+			// @Override
+			// public String toString() {
+			// return "Java Sort";
+			// }
+			// },
+			// new QuickSortBasicCenterV3b(),
 			// new QuickSortBasicCenterV3(),
 			// new QuickSortBasicCenter(),
 			// new QuickSortBasicRandom(),
-			new QuickSort(),
+			// new QuickSort(),
 			new HeapSort(),
-			// new QuickSortBasicRight(),
-			new InsertionSort(),
-			new ShellSort(),
-			new SelectionSort(),
-			new BubbleSort());
+			new HeapSortAlt()
+	// new QuickSortBasicRight(),
+	// new InsertionSort(),
+	// new ShellSort(),
+	// new SelectionSort(),
+	// new BubbleSort()
+	);
 
 	public static void main(String[] args) {
 		// int maxSizeLen = Arrays.stream(SIZES).map(s ->

@@ -1,4 +1,4 @@
-package edu.alexey.algos;
+package edu.alexey.algos.various;
 
 import java.util.ArrayList;
 import java.util.List;
